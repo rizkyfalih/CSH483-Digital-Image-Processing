@@ -117,24 +117,29 @@ function zoomin_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 image = getimage(handles.axes1);
-row = 2*size(image,1);
-column = 2*size(image,2);
-newImage = zeros(row, column, 3);
-m = 1; n = 1;
-for i = 1:size(image,1)
-    for j = 1:size(image,2)
-        newImage(m,n,:) = image(i,j,:);
-        newImage(m,n+1,:) = image(i,j,:);
-        newImage(m+1,n,:) = image(i,j,:);
-        newImage(m+1,n+1,:) = image(i,j,:);
-        n = n+2;
+if isempty(image)
+    errordlg( 'Please upload an image' )
+    return
+else
+    row = 2*size(image,1);
+    column = 2*size(image,2);
+    newImage = zeros(row, column, 3);
+    m = 1; n = 1;
+    for i = 1:size(image,1)
+        for j = 1:size(image,2)
+            newImage(m,n,:) = image(i,j,:);
+            newImage(m,n+1,:) = image(i,j,:);
+            newImage(m+1,n,:) = image(i,j,:);
+            newImage(m+1,n+1,:) = image(i,j,:);
+            n = n+2;
+        end
+        m = m+2;
+        n = 1;    
     end
-    m = m+2;
-    n = 1;    
+    newImage = uint8(newImage);
+    guidata(hObject,handles);
+    figure, imshow(newImage);
 end
-newImage = uint8(newImage);
-guidata(hObject,handles);
-figure, imshow(newImage);
 
 
 % --- Executes on button press in zoomout_button.
@@ -143,19 +148,24 @@ function zoomout_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 image = getimage(handles.axes1);
-newImage = zeros(round(size(image,1)/2), round(size(image,2)/2), 3);
-m = 1; n = 1;
-for i = 1:size(newImage,1)
-    for j = 1:size(newImage,2)
-        newImage(i,j,:) = image(m,n,:);
-        n = round(n+2);
+if isempty(image)
+    errordlg( 'Please upload an image' )
+    return
+else
+    newImage = zeros(round(size(image,1)/2), round(size(image,2)/2), 3);
+    m = 1; n = 1;
+    for i = 1:size(newImage,1)
+        for j = 1:size(newImage,2)
+            newImage(i,j,:) = image(m,n,:);
+            n = round(n+2);
+        end
+        m = round(m+2);
+        n = 1;
     end
-    m = round(m+2);
-    n = 1;
+    newImage = uint8(newImage);
+    guidata(hObject,handles);
+    figure, imshow(newImage);
 end
-newImage = uint8(newImage);
-guidata(hObject,handles);
-figure, imshow(newImage);
 
 % --- Executes on button press in grayscale_button.
 function grayscale_button_Callback(hObject, eventdata, handles)
@@ -163,11 +173,15 @@ function grayscale_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 img = getimage(handles.axes1);
-R = img(:,:,1);
-G = img(:,:,2);
-B = img(:,:,3);
-gray = 0.4*R + 0.3*G + 0.3*B;
-guidata(hObject,handles);
-axes(handles.axes2);
-
-imshow(gray);
+if isempty(image)
+    errordlg( 'Please upload an image' )
+    return
+else
+    R = img(:,:,1);
+    G = img(:,:,2);
+    B = img(:,:,3);
+    gray = 0.4*R + 0.3*G + 0.3*B;
+    guidata(hObject,handles);
+    axes(handles.axes2);
+    imshow(gray);
+end
