@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 22-Sep-2018 16:25:32
+% Last Modified by GUIDE v2.5 30-Sep-2018 23:53:50
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -82,6 +82,7 @@ try
     [Filename, Pathname]=uigetfile({'*.png';'*.jpg';}, 'File Selector');
     name = strcat(Pathname,Filename);
     img=imread(name);
+    guidata(hObject,handles);
     axes(handles.axes1);
     imshow(img);
 catch
@@ -185,3 +186,174 @@ else
     axes(handles.axes2);
     imshow(gray);
 end
+
+
+% --- Executes on button press in textplus.
+function textplus_Callback(hObject, eventdata, handles)
+% hObject    handle to textplus (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+img = getimage(handles.axes1);
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+
+newImg = img;
+val = str2num(get(handles.textplus,'String'));
+newImg(:,:,1) = R+val;
+newImg(:,:,2) = G+val;
+newImg(:,:,3) = B+val;
+
+guidata(hObject,handles);
+axes(handles.axes2);
+imshow(newImg);
+
+% --- Executes during object creation, after setting all properties.
+function textplus_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textplus (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes during object creation, after setting all properties.
+function textmin_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textmin (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes during object creation, after setting all properties.
+function textmulti_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textmulti (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function textdiv_Callback(hObject, eventdata, handles)
+% hObject    handle to textdiv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textdiv as text
+%        str2double(get(hObject,'String')) returns contents of textdiv as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function textdiv_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textdiv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in brightminus.
+function brightminus_Callback(hObject, eventdata, handles)
+% hObject    handle to brightminus (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+img = getimage(handles.axes1);
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+
+newImg = img;
+val = str2num(get(handles.textmin,'String'));
+newImg(:,:,1) = R-val;
+newImg(:,:,2) = G-val;
+newImg(:,:,3) = B-val;
+
+guidata(hObject,handles);
+axes(handles.axes2);
+imshow(newImg);
+
+% --- Executes on button press in brightmulti.
+function brightmulti_Callback(hObject, eventdata, handles)
+% hObject    handle to brightmulti (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+img = getimage(handles.axes1);
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+
+newImg = img;
+val = str2num(get(handles.textmulti,'String'));
+newImg(:,:,1) = R*val;
+newImg(:,:,2) = G*val;
+newImg(:,:,3) = B*val;
+
+guidata(hObject,handles);
+axes(handles.axes2);
+imshow(newImg);
+
+% --- Executes on button press in brightdiv.
+function brightdiv_Callback(hObject, eventdata, handles)
+% hObject    handle to brightdiv (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+img = getimage(handles.axes1);
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+
+newImg = img;
+val = str2num(get(handles.textdiv,'String'));
+newImg(:,:,1) = R/val;
+newImg(:,:,2) = G/val;
+newImg(:,:,3) = B/val;
+
+guidata(hObject,handles);
+axes(handles.axes2);
+imshow(newImg);
+
+
+% --- Executes on button press in leftbutton.
+function leftbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to leftbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+img = getimage(handles.axes1);
+[tinggi, lebar] = size(img);
+sx = 145;
+sy = -135;
+
+F2 = double(img);
+G = zeros(size(F2));
+for y=1 :tinggi
+    for x=1 :lebar
+        xlama = x;
+        ylama = y + sy;
+        
+        if (xlama >= 1) && (xlama<=lebar) && (ylama>=1) && (ylama<=tinggi)
+            G(y,x) = F2(ylama,xlama);
+        else
+            G(y,x) = 0;
+        end
+    end
+end
+
+G = uint8(G);
+axes(handles.axes2);
+imshow(G);
