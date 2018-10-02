@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 30-Sep-2018 23:53:50
+% Last Modified by GUIDE v2.5 02-Oct-2018 09:22:03
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -78,15 +78,15 @@ function browse_button_Callback(hObject, eventdata, handles)
 % hObject    handle to browse_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+global img;
 try 
     [Filename, Pathname]=uigetfile({'*.png';'*.jpg';}, 'File Selector');
     name = strcat(Pathname,Filename);
     img=imread(name);
-    guidata(hObject,handles);
     axes(handles.axes1);
     imshow(img);
 catch
-    f = errordlg('File type doesnt match','File Eror');
+    f = errordlg('File type doesnt match/empty or you close the browser','File Eror');
 end
    
 
@@ -117,30 +117,32 @@ function zoomin_button_Callback(hObject, eventdata, handles)
 % hObject    handle to zoomin_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-image = getimage(handles.axes1);
-if isempty(image)
-    errordlg( 'Please upload an image' )
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
     return
 else
-    row = 2*size(image,1);
-    column = 2*size(image,2);
-    newImage = zeros(row, column, 3);
-    m = 1; n = 1;
-    for i = 1:size(image,1)
-        for j = 1:size(image,2)
-            newImage(m,n,:) = image(i,j,:);
-            newImage(m,n+1,:) = image(i,j,:);
-            newImage(m+1,n,:) = image(i,j,:);
-            newImage(m+1,n+1,:) = image(i,j,:);
-            n = n+2;
-        end
-        m = m+2;
-        n = 1;    
+    axes(handles.axes1);
+    imshow(img);
+end;
+row = 2*size(img,1);
+column = 2*size(img,2);
+newImage = zeros(row, column, 3);
+m = 1; n = 1;
+for i = 1:size(img,1)
+    for j = 1:size(img,2)
+        newImage(m,n,:) = img(i,j,:);
+        newImage(m,n+1,:) = img(i,j,:);
+        newImage(m+1,n,:) = img(i,j,:);
+        newImage(m+1,n+1,:) = img(i,j,:);
+        n = n+2;
     end
-    newImage = uint8(newImage);
-    guidata(hObject,handles);
-    figure, imshow(newImage);
+    m = m+2;
+    n = 1;    
 end
+newImage = uint8(newImage);
+figure, imshow(newImage);
+
 
 
 % --- Executes on button press in zoomout_button.
@@ -148,44 +150,48 @@ function zoomout_button_Callback(hObject, eventdata, handles)
 % hObject    handle to zoomout_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-image = getimage(handles.axes1);
-if isempty(image)
-    errordlg( 'Please upload an image' )
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
     return
 else
-    newImage = zeros(round(size(image,1)/2), round(size(image,2)/2), 3);
-    m = 1; n = 1;
-    for i = 1:size(newImage,1)
-        for j = 1:size(newImage,2)
-            newImage(i,j,:) = image(m,n,:);
-            n = round(n+2);
-        end
-        m = round(m+2);
-        n = 1;
+    axes(handles.axes1);
+    imshow(img);
+end;
+newImage = zeros(round(size(img,1)/2), round(size(img,2)/2), 3);
+m = 1; n = 1;
+for i = 1:size(newImage,1)
+    for j = 1:size(newImage,2)
+        newImage(i,j,:) = img(m,n,:);
+        n = round(n+2);
     end
-    newImage = uint8(newImage);
-    guidata(hObject,handles);
-    figure, imshow(newImage);
+    m = round(m+2);
+    n = 1;
 end
+newImage = uint8(newImage);
+figure, imshow(newImage);
+
 
 % --- Executes on button press in grayscale_button.
 function grayscale_button_Callback(hObject, eventdata, handles)
 % hObject    handle to grayscale_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-img = getimage(handles.axes1);
-if isempty(image)
-    errordlg( 'Please upload an image' )
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
     return
 else
-    R = img(:,:,1);
-    G = img(:,:,2);
-    B = img(:,:,3);
-    gray = 0.4*R + 0.3*G + 0.3*B;
-    guidata(hObject,handles);
-    axes(handles.axes2);
-    imshow(gray);
-end
+    axes(handles.axes1);
+    imshow(img);
+end;
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+gray = 0.4*R + 0.3*G + 0.3*B;
+
+axes(handles.axes2);
+imshow(gray);
 
 
 % --- Executes on button press in textplus.
@@ -193,20 +199,7 @@ function textplus_Callback(hObject, eventdata, handles)
 % hObject    handle to textplus (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-img = getimage(handles.axes1);
-R = img(:,:,1);
-G = img(:,:,2);
-B = img(:,:,3);
 
-newImg = img;
-val = str2num(get(handles.textplus,'String'));
-newImg(:,:,1) = R+val;
-newImg(:,:,2) = G+val;
-newImg(:,:,3) = B+val;
-
-guidata(hObject,handles);
-axes(handles.axes2);
-imshow(newImg);
 
 % --- Executes during object creation, after setting all properties.
 function textplus_CreateFcn(hObject, eventdata, handles)
@@ -273,18 +266,28 @@ function brightminus_Callback(hObject, eventdata, handles)
 % hObject    handle to brightminus (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-img = getimage(handles.axes1);
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
 R = img(:,:,1);
 G = img(:,:,2);
 B = img(:,:,3);
 
 newImg = img;
 val = str2num(get(handles.textmin,'String'));
+if isempty(val) || isnan(val)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
 newImg(:,:,1) = R-val;
 newImg(:,:,2) = G-val;
 newImg(:,:,3) = B-val;
 
-guidata(hObject,handles);
 axes(handles.axes2);
 imshow(newImg);
 
@@ -293,18 +296,28 @@ function brightmulti_Callback(hObject, eventdata, handles)
 % hObject    handle to brightmulti (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-img = getimage(handles.axes1);
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
 R = img(:,:,1);
 G = img(:,:,2);
 B = img(:,:,3);
 
 newImg = img;
 val = str2num(get(handles.textmulti,'String'));
+if isempty(val) || isnan(val)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
 newImg(:,:,1) = R*val;
 newImg(:,:,2) = G*val;
 newImg(:,:,3) = B*val;
 
-guidata(hObject,handles);
 axes(handles.axes2);
 imshow(newImg);
 
@@ -313,20 +326,197 @@ function brightdiv_Callback(hObject, eventdata, handles)
 % hObject    handle to brightdiv (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-img = getimage(handles.axes1);
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
 R = img(:,:,1);
 G = img(:,:,2);
 B = img(:,:,3);
 
 newImg = img;
 val = str2num(get(handles.textdiv,'String'));
+if isempty(val) || isnan(val)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
 newImg(:,:,1) = R/val;
 newImg(:,:,2) = G/val;
 newImg(:,:,3) = B/val;
 
-guidata(hObject,handles);
 axes(handles.axes2);
 imshow(newImg);
+
+
+% --- Executes on button press in bottombutton.
+function bottombutton_Callback(hObject, eventdata, handles)
+% hObject    handle to bottombutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
+[h, w] = size(img);
+movePixel = - str2num(get(handles.textbottom,'String'));
+if isempty(movePixel) || isnan(movePixel)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
+tempImg = double(img);
+newImg = zeros(size(tempImg));
+for y=1 :h
+    for x=1 :w
+        oldx = x;
+        oldy = y + movePixel;
+        
+        if (oldx >= 1) && (oldx<=w) && (oldy>=1) && (oldy<=h)
+            newImg(y,x) = tempImg(oldy,oldx);
+        else
+            newImg(y,x) = 0;
+        end
+    end
+end
+
+newImg = uint8(newImg);
+axes(handles.axes2);
+imshow(newImg);
+
+
+
+function textbottom_Callback(hObject, eventdata, handles)
+% hObject    handle to textbottom (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textbottom as text
+%        str2double(get(hObject,'String')) returns contents of textbottom as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function textbottom_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textbottom (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in upbutton.
+function upbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to upbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
+[h, w] = size(img);
+movePixel = str2num(get(handles.textup,'String'));
+if isempty(movePixel) || isnan(movePixel)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
+tempImg = double(img);
+newImg = zeros(size(tempImg));
+for y=1 :h
+    for x=1 :w
+        oldx = x;
+        oldy = y + movePixel;
+        
+        if (oldx >= 1) && (oldx<=w) && (oldy>=1) && (oldy<=h)
+            newImg(y,x) = tempImg(oldy,oldx);
+        else
+            newImg(y,x) = 0;
+        end
+    end
+end
+newImg = uint8(newImg);
+axes(handles.axes2);
+imshow(newImg);
+
+function textup_Callback(hObject, eventdata, handles)
+% hObject    handle to textup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textup as text
+%        str2double(get(hObject,'String')) returns contents of textup as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function textup_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textup (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function textleft_Callback(hObject, eventdata, handles)
+% hObject    handle to textleft (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textleft as text
+%        str2double(get(hObject,'String')) returns contents of textleft as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function textleft_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textleft (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function textright_Callback(hObject, eventdata, handles)
+% hObject    handle to textright (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textright as text
+%        str2double(get(hObject,'String')) returns contents of textright as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function textright_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textright (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
 
 
 % --- Executes on button press in leftbutton.
@@ -334,26 +524,121 @@ function leftbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to leftbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-img = getimage(handles.axes1);
-[tinggi, lebar] = size(img);
-sx = 145;
-sy = -135;
-
-F2 = double(img);
-G = zeros(size(F2));
-for y=1 :tinggi
-    for x=1 :lebar
-        xlama = x;
-        ylama = y + sy;
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
+[h, w] = size(img);
+movePixel = str2num(get(handles.textleft,'String'));
+if isempty(movePixel) || isnan(movePixel)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
+tempImg = double(img);
+newImg = zeros(size(tempImg));
+for y=1 :h
+    for x=1 :w
+        oldx = x + movePixel;
+        oldy = y;
         
-        if (xlama >= 1) && (xlama<=lebar) && (ylama>=1) && (ylama<=tinggi)
-            G(y,x) = F2(ylama,xlama);
+        if (oldx >= 1) && (oldx<=w) && (oldy>=1) && (oldy<=h)
+            newImg(y,x) = tempImg(oldy,oldx);
         else
-            G(y,x) = 0;
+            newImg(y,x) = 0;
         end
     end
 end
-
-G = uint8(G);
+newImg = uint8(newImg);
 axes(handles.axes2);
-imshow(G);
+imshow(newImg);
+
+% --- Executes on button press in rightbutton.
+function rightbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to rightbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
+[h, w] = size(img);
+movePixel = str2num(get(handles.textright,'String'));
+if isempty(movePixel) || isnan(movePixel)
+    errordlg( 'Please input numeric value in the side box' );
+    return
+end
+tempImg = double(img);
+newImg = zeros(size(tempImg));
+for y=1 :h
+    for x=1 :w
+        oldx = x - movePixel;
+        oldy = y;
+        
+        if (oldx >= 1) && (oldx<=w) && (oldy>=1) && (oldy<=h)
+            newImg(y,x) = tempImg(oldy,oldx);
+        else
+            newImg(y,x) = 0;
+        end
+    end
+end
+newImg = uint8(newImg);
+axes(handles.axes2);
+imshow(newImg);
+
+% --- Executes on button press in brightplus.
+function brightplus_Callback(hObject, eventdata, handles)
+% hObject    handle to brightplus (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    axes(handles.axes1);
+    imshow(img);
+end;
+R = img(:,:,1);
+G = img(:,:,2);
+B = img(:,:,3);
+
+newImg = img;
+val = str2num(get(handles.textplus,'String'));
+if isempty(val) || isnan(val)
+    errordlg( 'Please insert numeric value in the side box' );
+    return
+end
+newImg(:,:,1) = R+val;
+newImg(:,:,2) = G+val;
+newImg(:,:,3) = B+val;
+
+axes(handles.axes2);
+imshow(newImg);
+
+
+
+function textmin_Callback(hObject, eventdata, handles)
+% hObject    handle to textmin (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textmin as text
+%        str2double(get(hObject,'String')) returns contents of textmin as a double
+
+
+
+function textmulti_Callback(hObject, eventdata, handles)
+% hObject    handle to textmulti (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of textmulti as text
+%        str2double(get(hObject,'String')) returns contents of textmulti as a double
