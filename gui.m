@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 02-Oct-2018 09:22:03
+% Last Modified by GUIDE v2.5 30-Oct-2018 12:31:19
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -642,3 +642,19 @@ function textmulti_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of textmulti as text
 %        str2double(get(hObject,'String')) returns contents of textmulti as a double
+
+
+% --- Executes on button press in histogram.
+function histogram_Callback(hObject, eventdata, handles)
+% hObject    handle to histogram (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    newImg= HistNormalize(img);
+    axes(handles.axes2);
+    imshow(newImg);
+end;
