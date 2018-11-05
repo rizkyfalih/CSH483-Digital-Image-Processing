@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 30-Oct-2018 14:43:51
+% Last Modified by GUIDE v2.5 05-Nov-2018 16:21:40
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -644,9 +644,9 @@ function textmulti_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of textmulti as a double
 
 
-% --- Executes on button press in histogram.
-function histogram_Callback(hObject, eventdata, handles)
-% hObject    handle to histogram (see GCBO)
+% --- Executes on button press in equalizer.
+function equalizer_Callback(hObject, eventdata, handles)
+% hObject    handle to equalizer (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global img;
@@ -657,4 +657,34 @@ else
     newImg= HistNormalize(img);
     axes(handles.axes2);
     imshow(newImg);
+end;
+
+
+% --- Executes on button press in histogram.
+function histogram_Callback(hObject, eventdata, handles)
+% hObject    handle to histogram (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+if isempty(img)
+    errordlg( 'Please upload an image' );
+    return
+else
+    red = zeros(256,1);
+    green = zeros(256,1);
+    blue = zeros(256,1);
+    for i =1:size(img,1)
+        for j = 1:size(img,2)
+            x = img(i,j,1)+1;
+            y = img(i,j,2)+1;
+            z = img(i,j,3)+1;
+            red(x) = red(x)+1;
+            green(y) = green(y)+1;
+            blue(z) = blue(z)+1;
+        end
+    end
+    axes(handles.axes2);
+    plot(red);
+    plot(green);
+    plot(blue);
 end;
