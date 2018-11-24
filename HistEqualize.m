@@ -1,4 +1,4 @@
-function [OUTPUT] = HistNormalize(I)
+function [OUTPUT] = HistEqualize(I)
     for i = 1:3
         I(:,:,i) = Hist(I(:,:,i));
     end

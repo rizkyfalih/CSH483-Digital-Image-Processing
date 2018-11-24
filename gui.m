@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 05-Nov-2018 16:21:40
+% Last Modified by GUIDE v2.5 24-Nov-2018 14:03:58
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -654,7 +654,7 @@ if isempty(img)
     errordlg( 'Please upload an image' );
     return
 else
-    newImg= HistNormalize(img);
+    newImg= HistEqualize(img);
     axes(handles.axes2);
     imshow(newImg);
 end;
@@ -688,3 +688,41 @@ else
     plot(green);
     plot(blue);
 end;
+
+
+% --- Executes on button press in edgebutton.
+function edgebutton_Callback(hObject, eventdata, handles)
+% hObject    handle to edgebutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+Kernel = [-1 0 -1; 0 4 0; -1 0 -1];
+newImg = Konvolusi(img,Kernel);
+newImg = uint8(newImg);
+axes(handles.axes2);
+imshow(newImg);
+
+
+% --- Executes on button press in blur.
+function blur_Callback(hObject, eventdata, handles)
+% hObject    handle to blur (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+Kernel = 1/9 * [1 1 1; 1 1 1; 1 1 1];
+newImg = Konvolusi(img,Kernel);
+newImg = uint8(newImg);
+axes(handles.axes2);
+imshow(newImg);
+
+% --- Executes on button press in sharp.
+function sharp_Callback(hObject, eventdata, handles)
+% hObject    handle to sharp (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+Kernel = [0 -1 0; -1 5 -1; 0 -1 0];
+newImg = Konvolusi(img,Kernel);
+newImg = uint8(newImg);
+axes(handles.axes2);
+imshow(newImg);
