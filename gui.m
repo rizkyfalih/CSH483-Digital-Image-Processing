@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 24-Nov-2018 14:03:58
+% Last Modified by GUIDE v2.5 12-Dec-2018 21:43:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -185,11 +185,7 @@ else
     axes(handles.axes1);
     imshow(img);
 end;
-R = img(:,:,1);
-G = img(:,:,2);
-B = img(:,:,3);
-gray = 0.4*R + 0.3*G + 0.3*B;
-
+gray = Grayscale(img);
 axes(handles.axes2);
 imshow(gray);
 
@@ -696,8 +692,9 @@ function edgebutton_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global img;
+gray = Grayscale(img);
 Kernel = [-1 0 -1; 0 4 0; -1 0 -1];
-newImg = Konvolusi(img,Kernel);
+newImg = Konvolusi(gray,Kernel);
 newImg = uint8(newImg);
 axes(handles.axes2);
 imshow(newImg);
@@ -709,8 +706,9 @@ function blur_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global img;
+gray = Grayscale(img);
 Kernel = 1/9 * [1 1 1; 1 1 1; 1 1 1];
-newImg = Konvolusi(img,Kernel);
+newImg = Konvolusi(gray,Kernel);
 newImg = uint8(newImg);
 axes(handles.axes2);
 imshow(newImg);
@@ -721,8 +719,143 @@ function sharp_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global img;
+gray = Grayscale(img);
 Kernel = [0 -1 0; -1 5 -1; 0 -1 0];
-newImg = Konvolusi(img,Kernel);
+newImg = Konvolusi(gray,Kernel);
 newImg = uint8(newImg);
 axes(handles.axes2);
 imshow(newImg);
+
+
+% --- Executes on button press in thresholdbutton.
+function thresholdbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to thresholdbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+gray = Grayscale(img);
+
+t1 = str2num(get(handles.thres1,'String'));
+t2 = str2num(get(handles.thres2,'String')); 
+
+try 
+    newImg = Thresholds(gray, t1, t2);
+catch
+    f = errordlg('Your inputs size is oversize','File Eror');
+end
+
+axes(handles.axes2);
+imshow(newImg);
+
+
+
+function thres1_Callback(hObject, eventdata, handles)
+% hObject    handle to thres1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of thres1 as text
+%        str2double(get(hObject,'String')) returns contents of thres1 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function thres1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to thres1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function thres2_Callback(hObject, eventdata, handles)
+% hObject    handle to thres2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of thres2 as text
+%        str2double(get(hObject,'String')) returns contents of thres2 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function thres2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to thres2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function seedx_Callback(hObject, eventdata, handles)
+% hObject    handle to seedx (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of seedx as text
+%        str2double(get(hObject,'String')) returns contents of seedx as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function seedx_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to seedx (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function seedy_Callback(hObject, eventdata, handles)
+% hObject    handle to seedy (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of seedy as text
+%        str2double(get(hObject,'String')) returns contents of seedy as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function seedy_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to seedy (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in reggrowthbutton.
+function reggrowthbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to reggrowthbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+global img;
+z = Grayscale(img);
+
+x = str2num(get(handles.seedx,'String'));
+y = str2num(get(handles.seedy,'String')); 
+
+try 
+    newImg = RegionGrowth(z,x,y);
+catch
+    f = errordlg('Your input size is oversize','File Eror');
+end
+
+axes(handles.axes2);
+imshow(uint8(newImg));
