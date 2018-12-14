@@ -18,6 +18,11 @@
   <li>Move Up</li> 
   <li>Move Left</li>
   <li>Move Right</li>
-
-   
+  <li>Equalizer</li>
+  <li>Histogram</li>
+  <li>Edge Detection</li>
+  <li>Blur Image</li>
+  <li>Sharp Image</li>
+  <li>Threshold</li>
+  <li>Region Growth</li>
 </ul>
